@@ -67,6 +67,8 @@
 import { ref } from 'vue'
 import { db, addDoc, collection } from '../firebase/config'
 import pagebg from '@/assets/img/pageBg.jpg'
+import emailjs from '@emailjs/browser'  // Import EmailJS
+
 
 const isSubmitted = ref(false)
 
@@ -101,6 +103,20 @@ const handlesubmit = async () => {
   try {
     await addDoc(collection(db, 'messages'), userMessage)
     console.log('Message sent successfully!')
+
+    await emailjs.send(
+      'service_ze6bscj',      // Replace with your actual EmailJS service ID
+      'template_hsg3bgq',     // Replace with your actual EmailJS template ID
+      {
+        from_name: `${Firstname.value} ${Lastname.value}`,
+        phone: PhoneNumber.value,
+        from_email: Email.value,
+        message: Message.value
+      },
+      'Cpy-t3b7lMBoMekur'       // Replace with your EmailJS public key
+    )
+
+    console.log('Message sent and email delivered!')
     
     // Reset form fields
     Firstname.value = ''
@@ -115,6 +131,3 @@ const handlesubmit = async () => {
   }
 }
 </script>
-<style lang="scss" scoped>
-
-</style>
